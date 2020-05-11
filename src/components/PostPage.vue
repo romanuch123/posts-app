@@ -11,6 +11,13 @@
       {{ postInfo && postInfo.body }}
       <span>{{ author && author.username }}</span>
     </p>
+    <h2>Comments</h2>
+    <ul class="comments">
+      <li v-for="commentsItem in postInfo.comments" :key="commentsItem.id" class="comments__item">
+        <span class="comments__item__name">{{ commentsItem.name }}</span>
+        <span class="comments__item__body">{{ commentsItem.body }}</span>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -35,7 +42,8 @@ export default {
       return this.$store.getters.USERS;
     },
     author() {
-      return this.users && this.users.find((el) => el.id === this.postInfo.userId);
+      return this.users && this.users
+        .find((el) => el.id === (this.postInfo && this.postInfo.userId));
     },
   },
   methods: {
@@ -49,6 +57,10 @@ export default {
 <style lang="scss">
 @import '../styles/variables.scss';
 
+h2 {
+  margin: 5px;
+  font-weight: bold;
+}
 .post-page {
   &__title {
     font-size: 20px;
@@ -73,6 +85,23 @@ export default {
     }
     &::first-letter {
       text-transform: uppercase;
+    }
+  }
+}
+.comments {
+  &__item {
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    padding: 5px;
+    &__name {
+      display: block;
+      font-weight: bold;
+      &::first-letter {
+        text-transform: uppercase;
+      }
     }
   }
 }

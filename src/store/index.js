@@ -66,8 +66,18 @@ export default new Vuex.Store({
     },
     GET_POST_INFO: async (context, payload) => {
       context.commit('CHANGE_LOADING_STATUS', true);
-      const { data } = await axios.get(`https://jsonplaceholder.typicode.com/posts/${payload}`);
-      context.commit('SET_POSTS_INFO', data);
+
+      const requestOne = axios.get(`https://jsonplaceholder.typicode.com/posts/${payload}`);
+      const requestTwo = axios.get(`https://jsonplaceholder.typicode.com/posts/${payload}/comments`);
+
+      await axios.all([requestOne, requestTwo]).then(axios.spread((...responses) => {
+        const post = responses[0].data;
+        const comments = responses[1].data;
+        post.comments = comments;
+        context.commit('SET_POSTS_INFO', post);
+      })).catch((errors) => {
+        console.log(errors);
+      });
       context.commit('CHANGE_LOADING_STATUS', false);
     },
   },
